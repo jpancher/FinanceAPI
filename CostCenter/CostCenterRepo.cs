@@ -6,11 +6,11 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace financeAPI.Repo
 {
-    public class CostCenterRepository : IRepo
+    public class CostCenterRepo : IRepo<CostCenter>
     {
         private readonly DataContext _db;
 
-        public CostCenterRepository(DataContext db)
+        public CostCenterRepo(DataContext db)
         {
             _db = db;
         }

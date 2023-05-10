@@ -55,13 +55,34 @@ var app = builder.Build();
 
 app.UseSwagger();
 
-var costCenterRepo = new CostCenterRepository(db);
+var costCenterRepo = new CostCenterRepo(db);
+var chartOfAccountsRepo = new ChartOfAccountsRepo(db);
+var bankAccountRepo = new BankAccountRepo(db);
+var supplierRepo = new SupplierRepo(db);
 
 app.MapGet("/CostCenter", () => costCenterRepo.GetAll());
 app.MapGet("/CostCenter/{id}", (int id) => costCenterRepo.Get(id));
 app.MapDelete("/CostCenter/{id}", (int id) => costCenterRepo.Delete(id));
 app.MapPut("/CostCenter/{id}", (int id, CostCenter updatedCostCenter) => costCenterRepo.Update(id, updatedCostCenter));
 app.MapPost("/CostCenter/{id}", (CostCenter costCenter) => costCenterRepo.Create(costCenter));
+
+app.MapGet("/ChartOfAccounts", () => chartOfAccountsRepo.GetAll());
+app.MapGet("/ChartOfAccounts/{id}", (int id) => chartOfAccountsRepo.Get(id));
+app.MapDelete("/ChartOfAccounts/{id}", (int id) => chartOfAccountsRepo.Delete(id));
+app.MapPut("/ChartOfAccounts/{id}", (int id, ChartOfAccounts updatedChartOfAccounts) => chartOfAccountsRepo.Update(id, updatedChartOfAccounts));
+app.MapPost("/ChartOfAccounts/{id}", (ChartOfAccounts chartOfAccounts) => chartOfAccountsRepo.Create(chartOfAccounts));
+
+app.MapGet("/BankAccount", () => bankAccountRepo.GetAll());
+app.MapGet("/BankAccount/{id}", (int id) => bankAccountRepo.Get(id));
+app.MapDelete("/BankAccount/{id}", (int id) => bankAccountRepo.Delete(id));
+app.MapPut("/BankAccount/{id}", (int id, BankAccount updatedBankAccount) => bankAccountRepo.Update(id, updatedBankAccount));
+app.MapPost("/BankAccount/{id}", (BankAccount bankAccount) => bankAccountRepo.Create(bankAccount));
+
+app.MapGet("/Supplier", () => supplierRepo.GetAll());
+app.MapGet("/Supplier/{id}", (int id) => supplierRepo.Get(id));
+app.MapDelete("/Supplier/{id}", (int id) => supplierRepo.Delete(id));
+app.MapPut("/Supplier/{id}", (int id, Supplier updatedSupplier) => supplierRepo.Update(id, updatedSupplier));
+app.MapPost("/Supplier/{id}", (Supplier supplier) => supplierRepo.Create(supplier));
 
 app.UseSwaggerUI();
 

@@ -1,3 +1,4 @@
-dev/
-obj/
-.vs/
+/bin/Debug
+/.gitignore
+/.vs
+/obj
