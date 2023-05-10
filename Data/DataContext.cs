@@ -2,14 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Oracle.ManagedDataAccess.Client;
+using System;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace financeAPI.Data
 {
     public class DataContext:DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        private readonly IConfiguration _config;
+        private readonly DbContextOptions<DataContext> _options;
+
+        public DataContext(DbContextOptions<DataContext> options, IConfiguration config) : base(options)
         {
+            _config = config;
+            _options = options;
             
         }
 
@@ -22,8 +28,10 @@ namespace financeAPI.Data
                 //if (OracleConfiguration.WalletLocation == null)
                 // Set WalletLocation value to directory location of the ADB wallet (i.e. cwallet.sso)
                 OracleConfiguration.WalletLocation = @"c:\Oracle\Wallet";
-            }
-            base.OnConfiguring(optionsBuilder);             
+            }            
+            var option = optionsBuilder.UseOracle(_config["sbtdb:ConnectionString"]);
+            base.OnConfiguring(option);            
+
         }
 
         public DbSet<TransactionType> TransactionType { get; set; }
@@ -33,5 +41,28 @@ namespace financeAPI.Data
         public DbSet<Supplier> Supplier { get; set; }
         public DbSet<Models.Transaction> Transaction{ get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CostCenter>()
+                .HasIndex(p => new { p.Name })
+                .IsUnique(true);
+
+            modelBuilder.Entity<ChartOfAccounts>()
+                .HasIndex(p => new { p.Name })
+                .IsUnique(true);
+
+            modelBuilder.Entity<BankAccount>()
+                .HasIndex(p => new { p.Name })
+                .IsUnique(true);
+
+            modelBuilder.Entity<Supplier>()                            
+                .HasIndex(p => new { p.Name })
+                .IsUnique(true);
+
+            modelBuilder.Entity<Supplier>()
+                .HasIndex(p => new { p.Document })
+                .IsUnique(true);
+
+        }
     }
 }

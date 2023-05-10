@@ -43,7 +43,7 @@ var builder = WebApplication.CreateBuilder(args);
 //string conString = "User Id=<userName>;Password=<password>;Data Source=<dbName_high>;Connection Timeout=30;";
 string conString = builder.Configuration["sbtdb:ConnectionString"];
 var option = new DbContextOptionsBuilder<DataContext>().UseOracle(conString).Options;
-using var db = new DataContext(option);
+using var db = new DataContext(option, builder.Configuration);
 //db.Database.EnsureCreated();
 SeedData.SeedAll(db);
 
