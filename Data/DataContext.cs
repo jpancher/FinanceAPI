@@ -28,8 +28,12 @@ namespace financeAPI.Data
                 //if (OracleConfiguration.WalletLocation == null)
                 // Set WalletLocation value to directory location of the ADB wallet (i.e. cwallet.sso)
                 OracleConfiguration.WalletLocation = @"c:\Oracle\Wallet";
-            }            
-            var option = optionsBuilder.UseOracle(_config["sbtdb:ConnectionString"]);
+            }
+
+            optionsBuilder.EnableSensitiveDataLogging();
+
+            var option = optionsBuilder.UseOracle(_config["sbtdb:ConnectionString"]);                       
+
             base.OnConfiguring(option);            
 
         }

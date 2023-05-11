@@ -43,6 +43,7 @@ var builder = WebApplication.CreateBuilder(args);
 //string conString = "User Id=<userName>;Password=<password>;Data Source=<dbName_high>;Connection Timeout=30;";
 string conString = builder.Configuration["sbtdb:ConnectionString"];
 var option = new DbContextOptionsBuilder<DataContext>().UseOracle(conString).Options;
+
 using var db = new DataContext(option, builder.Configuration);
 //db.Database.EnsureCreated();
 SeedData.SeedAll(db);
@@ -59,6 +60,7 @@ var costCenterRepo = new CostCenterRepo(db);
 var chartOfAccountsRepo = new ChartOfAccountsRepo(db);
 var bankAccountRepo = new BankAccountRepo(db);
 var supplierRepo = new SupplierRepo(db);
+var transactionRepo = new TransactionRepo(db);
 
 app.MapGet("/CostCenter", () => costCenterRepo.GetAll());
 app.MapGet("/CostCenter/{id}", (int id) => costCenterRepo.Get(id));
@@ -79,10 +81,16 @@ app.MapPut("/BankAccount/{id}", (int id, BankAccount updatedBankAccount) => bank
 app.MapPost("/BankAccount/{id}", (BankAccount bankAccount) => bankAccountRepo.Create(bankAccount));
 
 app.MapGet("/Supplier", () => supplierRepo.GetAll());
-app.MapGet("/Supplier/{id}", (int id) => supplierRepo.Get(id));
-app.MapDelete("/Supplier/{id}", (int id) => supplierRepo.Delete(id));
-app.MapPut("/Supplier/{id}", (int id, Supplier updatedSupplier) => supplierRepo.Update(id, updatedSupplier));
-app.MapPost("/Supplier/{id}", (Supplier supplier) => supplierRepo.Create(supplier));
+app.MapGet("/Supplier/{guid}", (Guid guid) => supplierRepo.Get(guid));
+app.MapDelete("/Supplier/{guid}", (Guid guid) => supplierRepo.Delete(guid));
+app.MapPut("/Supplier/{guid}", (Guid guid, Supplier updatedSupplier) => supplierRepo.Update(guid, updatedSupplier));
+app.MapPost("/Supplier/{guid}", (Supplier supplier) => supplierRepo.Create(supplier));
+
+app.MapGet("/Transaction", () => transactionRepo.GetAll());
+app.MapGet("/Transaction/{guid}", (Guid guid) => transactionRepo.Get(guid));
+app.MapDelete("/Transaction/{guid}", (Guid guid) => transactionRepo.Delete(guid));
+app.MapPut("/Transaction/{guid}", (Guid guid, Transaction updatedTransaction) => transactionRepo.Update(guid, updatedTransaction));
+app.MapPost("/Transaction/{guid}", (Transaction transaction) => transactionRepo.Create(transaction));
 
 app.UseSwaggerUI();
 

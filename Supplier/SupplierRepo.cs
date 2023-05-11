@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace financeAPI.Repo
 {
-    public class SupplierRepo : IRepo<Supplier>
+    public class SupplierRepo : IRepoGuid<Supplier>
     {
         private readonly DataContext _db;
 
@@ -16,6 +16,10 @@ namespace financeAPI.Repo
         }
         public async Task<IResult> Create(Supplier supplier)
         {
+            if (supplier.Guid == Guid.Empty)
+            {
+                supplier.Guid = Guid.NewGuid();
+            }
 
             _db.Supplier.Add(supplier);
             await _db.SaveChangesAsync();
@@ -23,9 +27,9 @@ namespace financeAPI.Repo
             return TypedResults.Created($"/Supplier/{supplier.Guid}", supplier);
         }
 
-        public async Task<IResult> Delete(int id)
+        public async Task<IResult> Delete(Guid guid)
         {
-            if (await _db.Supplier.FindAsync(id) is Supplier supplier)
+            if (await _db.Supplier.FindAsync(guid) is Supplier supplier)
             {
                 _db.Supplier.Remove(supplier);
                 await _db.SaveChangesAsync();
@@ -36,9 +40,9 @@ namespace financeAPI.Repo
             return TypedResults.NotFound();
         }
 
-        public async Task<IResult> Get(int id)
+        public async Task<IResult> Get(Guid guid)
         {
-            var supplier = await _db.Supplier.FindAsync(id);
+            var supplier = await _db.Supplier.FindAsync(guid);
             return (supplier != null ? TypedResults.Ok(supplier) : TypedResults.NotFound());
         }
 
@@ -47,9 +51,9 @@ namespace financeAPI.Repo
             return TypedResults.Ok(await _db.Supplier.ToListAsync());
         }
 
-        public async Task<IResult> Update(int id, Supplier updatedSupplier)
+        public async Task<IResult> Update(Guid guid, Supplier updatedSupplier)
         {
-            var supplier = await _db.Supplier.FindAsync(id);
+            var supplier = await _db.Supplier.FindAsync(guid);
 
             if (supplier is null)
                 return TypedResults.NotFound();

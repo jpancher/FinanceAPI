@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using financeAPI.Data;
@@ -11,9 +12,11 @@ using financeAPI.Data;
 namespace financeAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230511143454_TransactionDetails")]
+    partial class TransactionDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace financeAPI.Migrations
                     b.Property<DateTime>("AccrualDate")
                         .HasColumnType("TIMESTAMP(7)");
 
-                    b.Property<int?>("BankAccountId")
+                    b.Property<int>("BankAccountId")
                         .HasColumnType("NUMBER(10)");
 
                     b.Property<int?>("ChartOfAccountsId")
@@ -239,7 +242,9 @@ namespace financeAPI.Migrations
                 {
                     b.HasOne("financeAPI.Models.BankAccount", "BankAccount")
                         .WithMany()
-                        .HasForeignKey("BankAccountId");
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("financeAPI.Models.ChartOfAccounts", "ChartOfAccounts")
                         .WithMany()
